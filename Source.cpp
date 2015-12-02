@@ -265,21 +265,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_DROPFILES:
-	{
-		const HDROP hDrop = (HDROP)wParam;
-		TCHAR szFileName[MAX_PATH];
-		DragQueryFile(hDrop, 0, szFileName, sizeof(szFileName));
-		LPCTSTR lpExt = PathFindExtension(szFileName);
-		while (PathMatchSpec(lpExt, TEXT("*.bmp")))
 		{
-			const HBITMAP hBitmap = (HBITMAP)LoadImage(GetModuleHandle(0), szFileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-			SetTexture(hBitmap);
-			DeleteObject(hBitmap);
-			break;
+			const HDROP hDrop = (HDROP)wParam;
+			TCHAR szFileName[MAX_PATH];
+			DragQueryFile(hDrop, 0, szFileName, sizeof(szFileName));
+			LPCTSTR lpExt = PathFindExtension(szFileName);
+			if (PathMatchSpec(lpExt, TEXT("*.bmp")))
+			{
+				const HBITMAP hBitmap = (HBITMAP)LoadImage(GetModuleHandle(0), szFileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+				SetTexture(hBitmap);
+				DeleteObject(hBitmap);
+			}
+			DragFinish(hDrop);
 		}
-		DragFinish(hDrop);
-	}
-	break;
+		break;
 	case WM_ACTIVATE:
 		active = !HIWORD(wParam);
 		break;
